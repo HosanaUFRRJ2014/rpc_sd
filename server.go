@@ -3,12 +3,18 @@ package main
 
 import (
 
+	"bufio"
 	"fmt"
+//	"log"
+	"os"
+	"strconv"
+	"strings"
 /*	"net/rpc"
-	"errors"
-*/
+	"errors" */
+
 )
 
+const CAMINHO_ARQUIVO string = "alunosCadastrados.txt"
 
 type Disciplina struct {
 	codigo string
@@ -19,52 +25,106 @@ type Disciplina struct {
 //var disciplinaNota map[string]Disciplina
 
 type Aluno struct {
-//	matricula string
+	matricula string
 	disciplinas map[string]float32
-
 }
 
 type CadastroNotas struct {
-	alunos map[string]Aluno
+	alunos []Aluno
 }
 
-/*
-func (aluno *Aluno) criarMapaDisciplinas(alu) {
-	
-}*/
+func (aluno *Aluno) construirEscritaArquivo(codDisciplina string, nota float32) string{
+	return aluno.matricula + "\t" + codDisciplina + "\t" + strconv.FormatFloat(float64(nota),'E', -1, 64) // + "\n"
+}
 
 
-/*func (aluno *Aluno) adicionarDisciplinaNota( codDisciplina string, nota float32) {
+func (aluno *Aluno) cadastroEncontrado(linhaArquivo string, codDisciplina string) bool{
 	
-	if aluno.disciplinas == nil {
-		aluno.disciplinas = make(map[string]float32)
+	var dadosAluno  [] string
+	dadosAluno = strings.Split(linhaArquivo,"\t")
+
+  //  fmt.Println(linhaArquivo, dadosAluno[1])
+	if codDisciplina == dadosAluno[1] {
+		return true
 	}
 
-	aluno.disciplinas[codDisciplina] = nota
+	return false
+}
+
+//Provável FIXME: arquivo não ser do tipo File, necessidade de descobrir o tipo correto
+func (aluno *Aluno) modificarNotaCadastrada(arquivo * os.File, codDisciplina string, nota float32) bool{
+	escritor := bufio.NewWriter(arquivo)
+	leitor := bufio.NewScanner(arquivo)
+
+	for leitor.Scan() {
+		if aluno.cadastroEncontrado(leitor.Text(), codDisciplina) {
+			// Provável FIXME: escritor não vai saber a posição do arquivo do leitor
+			fmt.Fprintln(escritor, aluno.construirEscritaArquivo(codDisciplina, nota))	
+		//	fmt.Println(aluno.construirEscritaArquivo(codDisciplina,nota))
+			return	true	
+		}
+		
+	}
+
+	return false
+	
+}
+
+func (aluno *Aluno) salvar(codDisciplina string, nota float32) error {
+
+	var arquivo * os.File
+
+	arquivo, erro := os.Create(CAMINHO_ARQUIVO)
+
+	if erro != nil {
+	//	arquivo, erro := os.Create(CAMINHO_ARQUIVO)
+	//	fmt.Println("label1")
+
+		//_ = arquivo
+
+		/*if erro != nil {
+			fmt.Println("label2")
+			return erro
+			
+		}*/
+
+		return erro
+	}
 
 
-}*/
+
+	defer arquivo.Close()
+
+	leitor := bufio.NewReader(arquivo)
+	escritor := bufio.NewWriter(arquivo)
+	leitorEscritor := bufio.NewReadWriter(leitor, escritor)	
+	sucessoModificarNota := aluno.modificarNotaCadastrada(arquivo, codDisciplina, nota)
+
+	if !sucessoModificarNota {
+		//adicionar nota não existente
+		// Provável FIXME: Colocar cursor para o fim do arquivo antes da escrita
+		escrita := aluno.construirEscritaArquivo(codDisciplina, nota)
+	//	fmt.Println(escrita)
+		fmt.Fprintln(leitorEscritor, escrita)
+		return leitorEscritor.Flush()
+
+	}
+
+
+	return nil
+	
+}
+
 
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
 func (cadastroNotas *CadastroNotas) cadastrarNota(matricula string, disciplina *Disciplina) error{
 	
-	if cadastroNotas.alunos == nil {
-		//cadastroNotas.aluno := Aluno{}
-		cadastroNotas.alunos = make(map[string]Aluno)
-		//cadastroNotas.alunos[matricula].disciplinas = make(map[string]float32)
-	}
+	var aluno Aluno	
+	aluno = Aluno{matricula: matricula}
+	//aluno.disciplinas[disciplina.codigo] = disciplina.nota
+	aluno.salvar(disciplina.codigo, disciplina.nota)
 
-	aluno := Aluno{}
-	aluno.disciplinas = make(map[string]float32)
-	aluno.disciplinas[disciplina.codigo] = disciplina.nota
-	cadastroNotas.alunos[matricula] = aluno
-	//cadastroNotas.alunos.disciplinas[disciplina.codigo] = disciplina.nota
-
-
-	//testando se o elemento foi adicionado no mapa com sucesso
-	/*if aluno.disciplinas[disciplina.codigo] != nil
-		*resposta = true*/
 
 	return nil
 
@@ -74,29 +134,11 @@ func (cadastroNotas *CadastroNotas) cadastrarNota(matricula string, disciplina *
 
 
 
-/*type CadastroNotas int
-
-
-func (tipo *CadastroNotas) cadastrarNota (aluno map[string], resposta *bool) {
-
-	//checar se nota existe. 
-		//Se existe, subscrever
-		//Caso contrário, criar novo cadastro no final do arquivo
-
-
-
-
-	*resposta = false
-	return nil
-}
-
-*/
-
 func main() {
 
 	c := CadastroNotas{}
 
-	c.cadastrarNota("2014780267",&Disciplina{"IM887",6.0})
+	c.cadastrarNota("2014780267",&Disciplina{"IM887",9.0})
 	c.cadastrarNota("2014780267",&Disciplina{"IM888",7.0})
 
 	
