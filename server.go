@@ -98,18 +98,9 @@ func extrairNotaAluno(linhaArquivo string) (float32, error) {
 }
 
 func modificarNotaCadastrada(arquivo * os.File, matricula string, codDisciplina string, nota float32) (bool, error){
-
-//	var linhasArquivo [] string
 	var tamanhoLinhaAtual int64
 	var i int
 	var posAtual int64
-//	var erro error
-/*	dadosArquivo, erro := ioutil.ReadAll(arquivo)
-	
-
-
-	textoArquivo := string(dadosArquivo)
-	linhasArquivo = strings.Split(textoArquivo,"\n") */
 
 	linhasArquivo,tamanhoArquivo, erro := recuperarCadastros(arquivo)
 
@@ -168,7 +159,7 @@ func  calcularCR(notasAluno [] float32) (float32){
 }
 
 
-func salvar(matricula string, codDisciplina string, nota float32) error {
+func cadastrarNota(matricula string, codDisciplina string, nota float32) error {
 
 	var arquivo * os.File
 	var sucessoModificarNota bool 
@@ -290,7 +281,7 @@ func consultarCR(matricula string) (float32, error){
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
 func (cadastroNotas *CadastroNotas) cadastrarNota(dadosCadastro DadosCadastro, sucessoCadastro *bool) error{
 	
-	erro :=	salvar(dadosCadastro.matricula, dadosCadastro.codigo, dadosCadastro.nota)
+	erro :=	cadastrarNota(dadosCadastro.matricula, dadosCadastro.codigo, dadosCadastro.nota)
 
 	if erro == nil {
 		*sucessoCadastro = true
