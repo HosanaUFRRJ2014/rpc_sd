@@ -17,22 +17,25 @@ import (
 
 const CAMINHO_ARQUIVO string = "alunosCadastrados.txt"
 
+
+//FIXME: Mudar struct Disciplina e Aluno para DadosCadastro
+
 type Disciplina struct {
 	codigo string
 	nota float32
 }
 
-
-//var disciplinaNota map[string]Disciplina
-
 type Aluno struct {
 	matricula string
-	disciplinas map[string]float32
+	//disciplinas map[string]float32
+	disciplinas []Disciplina
 }
 
 type CadastroNotas struct {
 	alunos []Aluno
 }
+
+//type CadastroNotas int
 
 func checarErro(erro error) {
     if erro != nil {
@@ -40,14 +43,19 @@ func checarErro(erro error) {
     }
 }
 
-func (aluno *Aluno) construirEscritaArquivo(codDisciplina string, nota float32) []byte{
-	byteSlice := []byte(aluno.matricula + "\t" + codDisciplina + "\t" + strconv.FormatFloat(float64(nota),'E', -1, 64) + "\n")
+func construirEscritaArquivo(matricula string, codDisciplina string, nota float32) []byte{
+	byteSlice := []byte(matricula + "\t" + codDisciplina + "\t" + strconv.FormatFloat(float64(nota),'E', -1, 64) + "\n")
 	return byteSlice
 
 }
 
+func moverPonteiroArquivo(arquivo *os.File, offset int64, origem int) (int64,error){
+	posAtual, erro := arquivo.Seek(offset, origem) 
+	return posAtual, erro
+	
+}
 
-func (aluno *Aluno) cadastroEncontrado(linhaArquivo string, codDisciplina string) bool{
+func cadastroEncontrado(linhaArquivo string, matricula string, codDisciplina string) bool{
 	
 	if len(linhaArquivo) == 0 {
 		return false
@@ -56,28 +64,21 @@ func (aluno *Aluno) cadastroEncontrado(linhaArquivo string, codDisciplina string
 	var dadosAluno  [] string
 	dadosAluno = strings.Split(linhaArquivo,"\t")
 
-	if aluno.matricula == dadosAluno[0] && codDisciplina == dadosAluno[1] {
+	if matricula == dadosAluno[0] && codDisciplina == dadosAluno[1] {
 		return true
 	}
 
 	return false
 }
 
-func moverPonteiroArquivo(arquivo *os.File, offset int64, origem int) int64{
-	posAtual, erro := arquivo.Seek(offset, origem) 
-	checarErro(erro)
-	return posAtual
-	
-}
-
-func (aluno *Aluno) modificarNotaCadastrada(arquivo * os.File, codDisciplina string, nota float32) bool{
+func modificarNotaCadastrada(arquivo * os.File, matricula string, codDisciplina string, nota float32) (bool, error){
 
 	var linhasArquivo [] string
 	var tamanhoLinhaAtual int64
 	var i int
 	var posAtual int64
 	dadosArquivo, erro := ioutil.ReadAll(arquivo)
-	checarErro(erro)
+	//checarErro(erro)
 
 
 	textoArquivo := string(dadosArquivo)
@@ -85,60 +86,69 @@ func (aluno *Aluno) modificarNotaCadastrada(arquivo * os.File, codDisciplina str
 
 
 	if len(textoArquivo) == 0 {
-		return false
+		return false,nil
 	}
 
 
 	//colocar ponteiro no início do arquivo
-	posAtual = moverPonteiroArquivo(arquivo, 0, os.SEEK_SET) 
+	posAtual,erro = moverPonteiroArquivo(arquivo, 0, os.SEEK_SET) 
 
 
 	for i < len(linhasArquivo) {
 				
 		tamanhoLinhaAtual = int64(len(linhasArquivo[i]))
-		if aluno.cadastroEncontrado(linhasArquivo[i],codDisciplina) {
-			bytesAEscrever := aluno.construirEscritaArquivo(codDisciplina,nota)
+		
+		if cadastroEncontrado(linhasArquivo[i], matricula ,codDisciplina) {
+			bytesAEscrever := construirEscritaArquivo(matricula,codDisciplina,nota)
 			arquivo.WriteAt(bytesAEscrever, posAtual)
-			return true
+			return true,nil
 			
 		}
 
 		//mover ponteiro para a próxima linha
-		posAtual = moverPonteiroArquivo(arquivo,int64(tamanhoLinhaAtual) + 1, os.SEEK_CUR)
+		posAtual,erro = moverPonteiroArquivo(arquivo,tamanhoLinhaAtual + 1, os.SEEK_CUR)
 		i++
 
 
 	}
 
 	//mover ponteiro para o fim do arquivo
-	posAtual = moverPonteiroArquivo(arquivo,int64(len(dadosArquivo)), os.SEEK_SET)
-	return false
+	posAtual,erro = moverPonteiroArquivo(arquivo,int64(len(dadosArquivo)), os.SEEK_SET)
+	return false,erro
 
 
 	
 }
 
-func (aluno *Aluno) salvar(codDisciplina string, nota float32) error {
+func cadastrarNovaNota(arquivo *os.File, matricula string, codDisciplina string, nota float32) error{
+	escrita := construirEscritaArquivo(matricula, codDisciplina, nota)
+	_, erro := arquivo.Write(escrita)
+	return erro
+}
+
+func salvar(matricula string, codDisciplina string, nota float32) error {
 
 	var arquivo * os.File
+	var sucessoModificarNota bool 
+	var erro error
 
-	arquivo, erro := os.OpenFile(CAMINHO_ARQUIVO,os.O_RDWR|/*os.O_APPEND|*/os.O_CREATE,0666)
-	checarErro(erro)
+	//abertura de arquivo
+	arquivo, erro = os.OpenFile(CAMINHO_ARQUIVO,os.O_RDWR | os.O_CREATE, 0666)
 	defer arquivo.Close()
 
-	sucessoModificarNota := aluno.modificarNotaCadastrada(arquivo, codDisciplina, nota)
+
+	//tentar modificar nota, caso matricula && disciplina estejam cadastradas
+	sucessoModificarNota,erro = modificarNotaCadastrada(arquivo, matricula, codDisciplina, nota)
 
 
-	//adicionar nota não existente
+	//Senão estiverem cadastradas, adicionar nota não existente
 	if !sucessoModificarNota {
-		escrita := aluno.construirEscritaArquivo(codDisciplina, nota)
-   		_, erro := arquivo.Write(escrita)
-   		checarErro(erro)
+		erro = cadastrarNovaNota(arquivo, matricula, codDisciplina, nota)		
 
 	}
 
 
-	return nil
+	return erro
 	
 }
 
@@ -147,25 +157,24 @@ func (aluno *Aluno) salvar(codDisciplina string, nota float32) error {
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
 func (cadastroNotas *CadastroNotas) cadastrarNota(matricula string, disciplina *Disciplina) error{
 	
-	var aluno Aluno	
-	aluno = Aluno{matricula: matricula}
+	//var aluno Aluno	
+	//aluno = Aluno{matricula: matricula}
 	//aluno.disciplinas[disciplina.codigo] = disciplina.nota
-	aluno.salvar(disciplina.codigo, disciplina.nota)
+	erro :=	salvar(matricula, disciplina.codigo, disciplina.nota)
 
 
-	return nil
+	return erro
 
 	
 }
-
-
 
 
 func main() {
 
 	c := CadastroNotas{}
 
-	c.cadastrarNota("2014780267",&Disciplina{"IM888",1.0})
+	erro := c.cadastrarNota("2014780267",&Disciplina{"IM888",1.0})
+	checarErro(erro) //client deve receber o erro
 	c.cadastrarNota("2014780267",&Disciplina{"IM556",2.0})
 	c.cadastrarNota("2014780267",&Disciplina{"AA944",3.0})
 	c.cadastrarNota("2014780267",&Disciplina{"BB331",4.0})
