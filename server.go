@@ -8,8 +8,10 @@ import (
 //	"log"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
+
 /*	"net/rpc"
 	"errors" */
 
@@ -47,7 +49,7 @@ type CadastroNotas struct {
 func checarErro(erro error) {
     if erro != nil {
        fmt.Print(erro, "\n")
-       panic(erro)
+      // panic(erro)
      //  os.Exit(1)
     }
 }
@@ -82,11 +84,10 @@ func cadastroEncontrado(linhaArquivo string, matricula string, codDisciplina str
 	var dadosAluno  [] string
 	dadosAluno = strings.Split(linhaArquivo,"\t")
 
-	if matricula == dadosAluno[0] && codDisciplina == dadosAluno[1] {
-		return true
-	}
+	matriculasIguais, _ := regexp.MatchString(matricula, dadosAluno[0])
+	codDisciplinaIguais, _ := regexp.MatchString(codDisciplina, dadosAluno[1])
 
-	return false
+    return matriculasIguais && codDisciplinaIguais
 }
 
 func modificarNotaCadastrada(arquivo * os.File, matricula string, codDisciplina string, nota float32) (bool, error){
@@ -217,6 +218,43 @@ func consultarNota(matricula string, codDisciplina string) (float32, error) {
 	
 }
 
+func consultarNotas(matricula string) ([] float32, error){
+	var arquivo * os.File
+	var notaAluno float64
+	var erro error
+	var linhasArquivo []string
+	var i int
+	var notasAluno [] float32
+
+
+	//abertura de arquivo
+	arquivo, erro = os.OpenFile(CAMINHO_ARQUIVO,os.O_RDWR | os.O_CREATE, 0666)
+	defer arquivo.Close()
+
+
+	linhasArquivo, _ , erro = recuperarCadastros(arquivo)
+
+	for i < len(linhasArquivo) {
+				
+		if cadastroEncontrado(linhasArquivo[i], matricula ,".") {
+			dadosAluno := strings.Split(linhasArquivo[i], "\t")
+			notaAluno, erro = strconv.ParseFloat(dadosAluno[2], 32)
+			notasAluno = append(notasAluno, float32(notaAluno))
+			
+		}
+
+		i++
+
+	}
+
+	if len(notasAluno) == 0 {
+		erro = fmt.Errorf("Erro: Impossível encontrar notas do aluno %q.", matricula)	
+	}
+
+	return notasAluno, erro
+
+}
+
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
 func (cadastroNotas *CadastroNotas) cadastrarNota(dadosCadastro DadosCadastro, sucessoCadastro *bool) error{
@@ -241,11 +279,12 @@ func (cadastroNotas *CadastroNotas) consultarNota(dadosCadastro DadosCadastro, n
 }
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-/*func (cadastroNotas *CadastroNotas) consultarNotas(dadosCadastro DadosCadastro, notas *[] float32) error{
+func (cadastroNotas *CadastroNotas) consultarNotas(dadosCadastro DadosCadastro, notas *[] float32) error{
 	var erro error
-	*notas
+	*notas,erro = consultarNotas(dadosCadastro.matricula)
+	return erro
 
-}*/
+}
 
 
 func main() {
@@ -261,17 +300,26 @@ func main() {
 	c.cadastrarNota("2014780267",&Disciplina{"IM556",5.0})*/
 
 
-	var notaAluno float32
+/*	var notaAluno float32
 
-	erro := c.consultarNota(DadosCadastro{matricula:"2014780267",codigo:"IA556"}, &notaAluno)
+	erro := c.consultarNota(DadosCadastro{matricula:"2014780267",codigo:"IM556"}, &notaAluno)
 
 	checarErro(erro)
 
-	fmt.Println(notaAluno)
+	fmt.Println(notaAluno)*/
+
+
+
+
+	var notasAluno [] float32
+	erro := c.consultarNotas(DadosCadastro{matricula:"2014780267"}, &notasAluno)
+	checarErro(erro)
+	fmt.Println(notasAluno)
+
 
 
 	fmt.Println("")
-	
+
 //	fmt.Println(c.alunos)
 
 /*	a := Aluno{matricula: "2014780267"}
