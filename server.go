@@ -55,11 +55,6 @@ func (aluno *Aluno) cadastroEncontrado(linhaArquivo string, codDisciplina string
 
 	var dadosAluno  [] string
 	dadosAluno = strings.Split(linhaArquivo,"\t")
-  //  fmt.Println(linhaArquivo, dadosAluno[1])
-
-	fmt.Println("matricula: ", aluno.matricula, " && ", dadosAluno[0])
-	fmt.Println("codDisciplina: ", codDisciplina, " && ", dadosAluno[1])
-	fmt.Println("")
 
 	if aluno.matricula == dadosAluno[0] && codDisciplina == dadosAluno[1] {
 		return true
@@ -68,26 +63,26 @@ func (aluno *Aluno) cadastroEncontrado(linhaArquivo string, codDisciplina string
 	return false
 }
 
-func moverPonteiroArquivo(arquivo *os.File, offset int64, origem int) {
-	movidos, erro := arquivo.Seek(offset, origem) 
-	fmt.Println("Movidos: ", movidos)
+func moverPonteiroArquivo(arquivo *os.File, offset int64, origem int) int64{
+	posAtual, erro := arquivo.Seek(offset, origem) 
 	checarErro(erro)
+	return posAtual
 	
 }
 
-//Provável FIXME: arquivo não ser do tipo File, necessidade de descobrir o tipo correto
 func (aluno *Aluno) modificarNotaCadastrada(arquivo * os.File, codDisciplina string, nota float32) bool{
 
 	var linhasArquivo [] string
 	var tamanhoLinhaAtual int64
 	var i int
+	var posAtual int64
 	dadosArquivo, erro := ioutil.ReadAll(arquivo)
 	checarErro(erro)
 
 
 	textoArquivo := string(dadosArquivo)
 	linhasArquivo = strings.Split(textoArquivo,"\n") 
-//	fmt.Println("Conteudo:\n\n ", textoArquivo)
+
 
 	if len(textoArquivo) == 0 {
 		return false
@@ -95,34 +90,28 @@ func (aluno *Aluno) modificarNotaCadastrada(arquivo * os.File, codDisciplina str
 
 
 	//colocar ponteiro no início do arquivo
-	moverPonteiroArquivo(arquivo, 0, os.SEEK_SET) 
-
-
-	fmt.Println("Len:   ", len(linhasArquivo))
+	posAtual = moverPonteiroArquivo(arquivo, 0, os.SEEK_SET) 
 
 
 	for i < len(linhasArquivo) {
-		fmt.Println("\nlinhaArquivo:   ",len(linhasArquivo[i]))
-		tamanhoLinhaAtual += int64(len(linhasArquivo[i]))
+				
+		tamanhoLinhaAtual = int64(len(linhasArquivo[i]))
 		if aluno.cadastroEncontrado(linhasArquivo[i],codDisciplina) {
 			bytesAEscrever := aluno.construirEscritaArquivo(codDisciplina,nota)
-			arquivo.WriteAt(bytesAEscrever, tamanhoLinhaAtual)
+			arquivo.WriteAt(bytesAEscrever, posAtual)
 			return true
 			
 		}
 
 		//mover ponteiro para a próxima linha
-		moverPonteiroArquivo(arquivo,int64(tamanhoLinhaAtual), os.SEEK_CUR)
-		//i = tamanhoLinhaAtual
+		posAtual = moverPonteiroArquivo(arquivo,int64(tamanhoLinhaAtual) + 1, os.SEEK_CUR)
 		i++
-		fmt.Println("i: ", i)
-		//fmt.Println("Executou!!!")
 
 
 	}
 
 	//mover ponteiro para o fim do arquivo
-	moverPonteiroArquivo(arquivo,int64(len(dadosArquivo)), os.SEEK_SET)
+	posAtual = moverPonteiroArquivo(arquivo,int64(len(dadosArquivo)), os.SEEK_SET)
 	return false
 
 
@@ -139,11 +128,9 @@ func (aluno *Aluno) salvar(codDisciplina string, nota float32) error {
 
 	sucessoModificarNota := aluno.modificarNotaCadastrada(arquivo, codDisciplina, nota)
 
-	fmt.Println("Sucesso modificar  nota?", sucessoModificarNota)
 
+	//adicionar nota não existente
 	if !sucessoModificarNota {
-		//adicionar nota não existente
-		// Provável FIXME: Colocar cursor para o fim do arquivo antes da escrita
 		escrita := aluno.construirEscritaArquivo(codDisciplina, nota)
    		_, erro := arquivo.Write(escrita)
    		checarErro(erro)
@@ -178,11 +165,14 @@ func main() {
 
 	c := CadastroNotas{}
 
-	c.cadastrarNota("2014780267",&Disciplina{"IM556",9.0})
-	c.cadastrarNota("2014780267",&Disciplina{"IM888",7.0})
-	c.cadastrarNota("2014780267",&Disciplina{"AA944",5.0})
-	c.cadastrarNota("2014780267",&Disciplina{"IM556",10.0})
+	c.cadastrarNota("2014780267",&Disciplina{"IM888",1.0})
+	c.cadastrarNota("2014780267",&Disciplina{"IM556",2.0})
+	c.cadastrarNota("2014780267",&Disciplina{"AA944",3.0})
+	c.cadastrarNota("2014780267",&Disciplina{"BB331",4.0})
+	c.cadastrarNota("2014780267",&Disciplina{"IM556",5.0})
 
+
+	fmt.Println("")
 	
 //	fmt.Println(c.alunos)
 
