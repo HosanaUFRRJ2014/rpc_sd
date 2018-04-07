@@ -90,6 +90,13 @@ func cadastroEncontrado(linhaArquivo string, matricula string, codDisciplina str
     return matriculasIguais && codDisciplinaIguais
 }
 
+func extrairNotaAluno(linhaArquivo string) (float32, error) {
+	dadosAluno := strings.Split(linhaArquivo, "\t")
+	notaAluno, erro := strconv.ParseFloat(dadosAluno[2], 32)
+
+	return float32(notaAluno), erro
+}
+
 func modificarNotaCadastrada(arquivo * os.File, matricula string, codDisciplina string, nota float32) (bool, error){
 
 //	var linhasArquivo [] string
@@ -182,7 +189,7 @@ func salvar(matricula string, codDisciplina string, nota float32) error {
 func consultarNota(matricula string, codDisciplina string) (float32, error) {
 	
 	var arquivo * os.File
-	var notaAluno float64
+	var notaAluno float32
 	var erro error
 	var linhasArquivo []string
 	var i int
@@ -198,9 +205,9 @@ func consultarNota(matricula string, codDisciplina string) (float32, error) {
 	for i < len(linhasArquivo) {
 				
 		if cadastroEncontrado(linhasArquivo[i], matricula ,codDisciplina) {
-			dadosAluno := strings.Split(linhasArquivo[i], "\t")
-			notaAluno, erro = strconv.ParseFloat(dadosAluno[2], 32)
-			return float32(notaAluno), erro
+			
+			notaAluno, erro = extrairNotaAluno(linhasArquivo[i])
+			return notaAluno, erro
 			
 		}
 
@@ -220,7 +227,7 @@ func consultarNota(matricula string, codDisciplina string) (float32, error) {
 
 func consultarNotas(matricula string) ([] float32, error){
 	var arquivo * os.File
-	var notaAluno float64
+	var notaAluno float32
 	var erro error
 	var linhasArquivo []string
 	var i int
@@ -237,9 +244,8 @@ func consultarNotas(matricula string) ([] float32, error){
 	for i < len(linhasArquivo) {
 				
 		if cadastroEncontrado(linhasArquivo[i], matricula ,".") {
-			dadosAluno := strings.Split(linhasArquivo[i], "\t")
-			notaAluno, erro = strconv.ParseFloat(dadosAluno[2], 32)
-			notasAluno = append(notasAluno, float32(notaAluno))
+			notaAluno, erro = extrairNotaAluno(linhasArquivo[i])
+			notasAluno = append(notasAluno, notaAluno)
 			
 		}
 
