@@ -156,7 +156,16 @@ func cadastrarNovaNota(arquivo *os.File, matricula string, codDisciplina string,
 }
 
 
+func  calcularCR(notasAluno [] float32) (float32){
+	var cr float32
+	numDisciplinasAluno := len(notasAluno)
 
+	for i := 0; i < numDisciplinasAluno ; i++ {
+		cr += notasAluno[i]	
+	}
+
+	return cr/float32(numDisciplinasAluno)
+}
 
 
 func salvar(matricula string, codDisciplina string, nota float32) error {
@@ -261,6 +270,22 @@ func consultarNotas(matricula string) ([] float32, error){
 
 }
 
+func consultarCR(matricula string) (float32, error){
+	var cr float32
+	notasAluno, erro := consultarNotas(matricula)
+	cr = -1
+
+	if erro == nil {
+		cr = calcularCR(notasAluno)	
+	}
+
+	/*else {
+		erro = fmt.Errorf("Erro")
+	}*/
+
+	return cr, erro
+}
+
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
 func (cadastroNotas *CadastroNotas) cadastrarNota(dadosCadastro DadosCadastro, sucessoCadastro *bool) error{
@@ -292,6 +317,15 @@ func (cadastroNotas *CadastroNotas) consultarNotas(dadosCadastro DadosCadastro, 
 
 }
 
+//FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
+func (cadastroNotas *CadastroNotas) consultarCR(dadosCadastro DadosCadastro, cr * float32) error {
+	var erro error
+
+	*cr, erro = consultarCR(dadosCadastro.matricula)
+	return erro
+}
+
+
 
 func main() {
 
@@ -316,11 +350,17 @@ func main() {
 
 
 
-
+/*
 	var notasAluno [] float32
 	erro := c.consultarNotas(DadosCadastro{matricula:"2014780267"}, &notasAluno)
 	checarErro(erro)
-	fmt.Println(notasAluno)
+	fmt.Println(notasAluno)*/
+
+
+	var cr float32
+	erro := c.consultarCR(DadosCadastro{matricula:"2014780267"}, &cr)
+	checarErro(erro)
+	fmt.Println(cr)
 
 
 
