@@ -106,7 +106,7 @@ func modificarNotaCadastrada(arquivo * os.File, matricula string, codDisciplina 
 
 
 	if tamanhoArquivo == 0 {
-		return false,nil
+		return false,erro
 	}
 
 
@@ -134,13 +134,10 @@ func modificarNotaCadastrada(arquivo * os.File, matricula string, codDisciplina 
 
 	//mover ponteiro para o fim do arquivo
 	posAtual,erro = moverPonteiroArquivo(arquivo,tamanhoArquivo, os.SEEK_SET)
-	return false,erro
-
-
-	
+	return false,erro	
 }
 
-func cadastrarNovaNota(arquivo *os.File, matricula string, codDisciplina string, nota float32) error{
+func salvarNovaNota(arquivo *os.File, matricula string, codDisciplina string, nota float32) error{
 	escrita := construirEscritaArquivo(matricula, codDisciplina, nota)
 	_, erro := arquivo.Write(escrita)
 	return erro
@@ -157,7 +154,6 @@ func  calcularCR(notasAluno [] float32) (float32){
 
 	return cr/float32(numDisciplinasAluno)
 }
-
 
 func cadastrarNota(matricula string, codDisciplina string, nota float32) error {
 
@@ -176,7 +172,7 @@ func cadastrarNota(matricula string, codDisciplina string, nota float32) error {
 
 	//Senão estiverem cadastradas, adicionar nota não existente
 	if !sucessoModificarNota {
-		erro = cadastrarNovaNota(arquivo, matricula, codDisciplina, nota)		
+		erro = salvarNovaNota(arquivo, matricula, codDisciplina, nota)		
 
 	}
 
@@ -322,13 +318,15 @@ func main() {
 
 	c := CadastroNotas{}
 
-	//FIXME : modificar parametros para não dar erro
-	/*erro := c.cadastrarNota("2014780267",&Disciplina{"IM888",1.0})
+	var sucessoCadastro bool
+	erro := c.cadastrarNota(DadosCadastro{"2014780267","IM888",1.0}, &sucessoCadastro)
 	checarErro(erro) //client deve receber o erro
-	c.cadastrarNota("2014780267",&Disciplina{"IM556",2.0})
-	c.cadastrarNota("2014780267",&Disciplina{"AA944",3.0})
-	c.cadastrarNota("2014780267",&Disciplina{"BB331",4.0})
-	c.cadastrarNota("2014780267",&Disciplina{"IM556",5.0})*/
+	c.cadastrarNota(DadosCadastro{"2014780267","IM556",2.0}, &sucessoCadastro)
+	c.cadastrarNota(DadosCadastro{"2014780267","AA944",3.0}, &sucessoCadastro)
+	c.cadastrarNota(DadosCadastro{"2014780267","BB331",4.0}, &sucessoCadastro)
+	c.cadastrarNota(DadosCadastro{"2014780267","IM556",5.0}, &sucessoCadastro)
+
+	fmt.Println(sucessoCadastro)
 
 
 /*	var notaAluno float32
@@ -349,8 +347,8 @@ func main() {
 
 
 	var cr float32
-	erro := c.consultarCR(DadosCadastro{matricula:"2014780267"}, &cr)
-	checarErro(erro)
+	erro4 := c.consultarCR(DadosCadastro{matricula:"2014780267"}, &cr)
+	checarErro(erro4)
 	fmt.Println(cr)
 
 
