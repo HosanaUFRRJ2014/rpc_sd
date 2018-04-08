@@ -1,19 +1,19 @@
 //package server
-package main
+package server
 
 import (
 
 //	"bufio"
 	"fmt"
-//	"log"
 	"io/ioutil"
+	"log"
 	"os"
+	"net/rpc"
 	"regexp"
 	"strconv"
 	"strings"
 
-/*	"net/rpc"
-	"errors" */
+/*	"errors" */
 
 )
 
@@ -314,54 +314,10 @@ func (cadastroNotas *CadastroNotas) consultarCR(dadosCadastro DadosCadastro, cr 
 
 
 
-func main() {
+cadastroNotas := New(CadastroNotas)
+rpc.Register(cadastroNotas)
+rpc.HadleHttp(cadastroNotas)
+listenner, erro := net.Listen("tcp", ":3000")
+checarErro(erro)
 
-	c := CadastroNotas{}
-
-	var sucessoCadastro bool
-	erro := c.cadastrarNota(DadosCadastro{"2014780267","IM888",1.0}, &sucessoCadastro)
-	checarErro(erro) //client deve receber o erro
-	c.cadastrarNota(DadosCadastro{"2014780267","IM556",2.0}, &sucessoCadastro)
-	c.cadastrarNota(DadosCadastro{"2014780267","AA944",3.0}, &sucessoCadastro)
-	c.cadastrarNota(DadosCadastro{"2014780267","BB331",4.0}, &sucessoCadastro)
-	c.cadastrarNota(DadosCadastro{"2014780267","IM556",5.0}, &sucessoCadastro)
-
-	fmt.Println(sucessoCadastro)
-
-
-/*	var notaAluno float32
-
-	erro := c.consultarNota(DadosCadastro{matricula:"2014780267",codigo:"IM556"}, &notaAluno)
-
-	checarErro(erro)
-
-	fmt.Println(notaAluno)*/
-
-
-
-/*
-	var notasAluno [] float32
-	erro := c.consultarNotas(DadosCadastro{matricula:"2014780267"}, &notasAluno)
-	checarErro(erro)
-	fmt.Println(notasAluno)*/
-
-
-	var cr float32
-	erro4 := c.consultarCR(DadosCadastro{matricula:"2014780267"}, &cr)
-	checarErro(erro4)
-	fmt.Println(cr)
-
-
-
-	fmt.Println("")
-
-//	fmt.Println(c.alunos)
-
-/*	a := Aluno{matricula: "2014780267"}
-
-	a.adicionarDisciplinaNota("IM887", 10.0)
-	a.adicionarDisciplinaNota("AA888", 8.0)
-	a.adicionarDisciplinaNota("IM887", 5.0)
-
-	fmt.Println(a.disciplinas)*/
-}
+go http.Serve(listenner, nil)
