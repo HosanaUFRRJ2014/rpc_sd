@@ -3,11 +3,12 @@ package server
 
 import (
 
-//	"bufio"
 	"fmt"
 	"io/ioutil"
-	"log"
+//	"log"
 	"os"
+	"net"
+	"net/http"
 	"net/rpc"
 	"regexp"
 	"strconv"
@@ -313,11 +314,11 @@ func (cadastroNotas *CadastroNotas) consultarCR(dadosCadastro DadosCadastro, cr 
 }
 
 
-
-cadastroNotas := New(CadastroNotas)
-rpc.Register(cadastroNotas)
-rpc.HadleHttp(cadastroNotas)
-listenner, erro := net.Listen("tcp", ":3000")
-checarErro(erro)
-
-go http.Serve(listenner, nil)
+func servico() {
+	cadastroNotas := new(CadastroNotas)
+	rpc.Register(cadastroNotas)
+	rpc.HandleHTTP()
+	l, e := net.Listen("tcp", ":1234")
+	checarErro(e)
+	go http.Serve(l, nil)
+}
