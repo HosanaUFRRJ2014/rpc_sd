@@ -1,13 +1,17 @@
 //package server
-package server
+package main
+
 
 import (
 
 	"fmt"
+
+	//. "interfaceCadastroNotas"
+
 	"io/ioutil"
 //	"log"
 	"os"
-	"net"
+//	"net"
 	"net/http"
 	"net/rpc"
 	"regexp"
@@ -21,31 +25,17 @@ import (
 const CAMINHO_ARQUIVO string = "alunosCadastrados.txt"
 
 
-//FIXME: Mudar struct Disciplina e Aluno para DadosCadastro
-
-/*type Disciplina struct {
-	codigo string
-	nota float32
-}
-
-type Aluno struct {
-	matricula string
-	//disciplinas map[string]float32
-	disciplinas []Disciplina
+/*type CadastroNotas struct {
+	alunos []DadosCadastro
 }*/
 
-
-type DadosCadastro struct{
-	matricula string
-	codigo string
-	nota float32
+type DadosCadastro struct {
+	Matricula string
+	Codigo string
+	Nota float32
 }
 
-type CadastroNotas struct {
-	alunos []DadosCadastro
-}
-
-//type CadastroNotas int
+type CadastroNotas int
 
 func checarErro(erro error) {
     if erro != nil {
@@ -274,11 +264,13 @@ func consultarCR(matricula string) (float32, error){
 	return cr, erro
 }
 
+/****************************************MÉTODOS EXPORTADOS DO RPC*******************************************/
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-func (cadastroNotas *CadastroNotas) cadastrarNota(dadosCadastro DadosCadastro, sucessoCadastro *bool) error{
+//Em letra maiúscula porque os métodos precisam ser exportados
+func (cadastroNotas *CadastroNotas) CadastrarNota(dadosCadastro DadosCadastro, sucessoCadastro *bool) error{
 	
-	erro :=	cadastrarNota(dadosCadastro.matricula, dadosCadastro.codigo, dadosCadastro.nota)
+	erro :=	cadastrarNota(dadosCadastro.Matricula, dadosCadastro.Codigo, dadosCadastro.Nota)
 
 	if erro == nil {
 		*sucessoCadastro = true
@@ -290,35 +282,48 @@ func (cadastroNotas *CadastroNotas) cadastrarNota(dadosCadastro DadosCadastro, s
 }
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-func (cadastroNotas *CadastroNotas) consultarNota(dadosCadastro DadosCadastro, nota * float32) error{
+func (cadastroNotas *CadastroNotas) ConsultarNota(dadosCadastro DadosCadastro, nota * float32) error{
 	var erro error
-	*nota, erro = consultarNota(dadosCadastro.matricula, dadosCadastro.codigo)
+	*nota, erro = consultarNota(dadosCadastro.Matricula, dadosCadastro.Codigo)
 	return erro
 
 }
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-func (cadastroNotas *CadastroNotas) consultarNotas(dadosCadastro DadosCadastro, notas *[] float32) error{
+func (cadastroNotas *CadastroNotas) ConsultarNotas(dadosCadastro DadosCadastro, notas *[] float32) error{
 	var erro error
-	*notas,erro = consultarNotas(dadosCadastro.matricula)
+	*notas,erro = consultarNotas(dadosCadastro.Matricula)
 	return erro
 
 }
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-func (cadastroNotas *CadastroNotas) consultarCR(dadosCadastro DadosCadastro, cr * float32) error {
+func (cadastroNotas *CadastroNotas) ConsultarCR(dadosCadastro DadosCadastro, cr * float32) error {
 	var erro error
 
-	*cr, erro = consultarCR(dadosCadastro.matricula)
+	*cr, erro = consultarCR(dadosCadastro.Matricula)
 	return erro
 }
 
 
-func servico() {
+func main() {
 	cadastroNotas := new(CadastroNotas)
 	rpc.Register(cadastroNotas)
 	rpc.HandleHTTP()
-	l, e := net.Listen("tcp", ":1234")
-	checarErro(e)
-	go http.Serve(l, nil)
+	/*listener, erro := net.Listen("tcp", ":3000")
+	checarErro(erro)
+	go http.Serve(listener, nil)*/
+	erro := http.ListenAndServe(":1234", nil)
+    if erro != nil {
+        panic(erro)
+    }
 }
+
+/*func main() {
+
+    arith := new(Arith)
+    rpc.Register(arith)
+    rpc.HandleHTTP()
+
+   
+}*/
