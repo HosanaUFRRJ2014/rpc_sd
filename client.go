@@ -3,22 +3,15 @@ package main
 
 import  (
 	"fmt"
-	//"interfaceCadastroNotas"
+	. "interfaceCadastroNotas"
 
 	"net/rpc"
-//	"server"
-//	"os"
+
 
 
 
 )
 
-//TODO: usar interface para tirar replicação de código
-type DadosCadastro struct {
-	Matricula string
-	Codigo string
-	Nota float32
-}
 
 
 func main() {

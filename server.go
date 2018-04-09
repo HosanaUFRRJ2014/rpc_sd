@@ -6,7 +6,7 @@ import (
 
 	"fmt"
 
-	//. "interfaceCadastroNotas"
+	"interfaceCadastroNotas"         //TODO: Pegar essa interface da internet go get ...
 
 	"io/ioutil"
 //	"log"
@@ -29,11 +29,11 @@ const CAMINHO_ARQUIVO string = "alunosCadastrados.txt"
 	alunos []DadosCadastro
 }*/
 
-type DadosCadastro struct {
+/*type DadosCadastro struct {
 	Matricula string
 	Codigo string
 	Nota float32
-}
+}*/
 
 type CadastroNotas int
 
@@ -268,7 +268,7 @@ func consultarCR(matricula string) (float32, error){
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
 //Em letra maiúscula porque os métodos precisam ser exportados
-func (cadastroNotas *CadastroNotas) CadastrarNota(dadosCadastro DadosCadastro, sucessoCadastro *bool) error{
+func (cadastroNotas *CadastroNotas) CadastrarNota(dadosCadastro interfaceCadastroNotas.DadosCadastro, sucessoCadastro *bool) error{
 	
 	erro :=	cadastrarNota(dadosCadastro.Matricula, dadosCadastro.Codigo, dadosCadastro.Nota)
 
@@ -282,7 +282,7 @@ func (cadastroNotas *CadastroNotas) CadastrarNota(dadosCadastro DadosCadastro, s
 }
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-func (cadastroNotas *CadastroNotas) ConsultarNota(dadosCadastro DadosCadastro, nota * float32) error{
+func (cadastroNotas *CadastroNotas) ConsultarNota(dadosCadastro interfaceCadastroNotas.DadosCadastro, nota * float32) error{
 	var erro error
 	*nota, erro = consultarNota(dadosCadastro.Matricula, dadosCadastro.Codigo)
 	return erro
@@ -290,7 +290,7 @@ func (cadastroNotas *CadastroNotas) ConsultarNota(dadosCadastro DadosCadastro, n
 }
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-func (cadastroNotas *CadastroNotas) ConsultarNotas(dadosCadastro DadosCadastro, notas *[] float32) error{
+func (cadastroNotas *CadastroNotas) ConsultarNotas(dadosCadastro interfaceCadastroNotas.DadosCadastro, notas *[] float32) error{
 	var erro error
 	*notas,erro = consultarNotas(dadosCadastro.Matricula)
 	return erro
@@ -298,7 +298,7 @@ func (cadastroNotas *CadastroNotas) ConsultarNotas(dadosCadastro DadosCadastro, 
 }
 
 //FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
-func (cadastroNotas *CadastroNotas) ConsultarCR(dadosCadastro DadosCadastro, cr * float32) error {
+func (cadastroNotas *CadastroNotas) ConsultarCR(dadosCadastro interfaceCadastroNotas.DadosCadastro, cr * float32) error {
 	var erro error
 
 	*cr, erro = consultarCR(dadosCadastro.Matricula)
@@ -317,6 +317,8 @@ func main() {
     if erro != nil {
         panic(erro)
     }
+
+   
 }
 
 /*func main() {
