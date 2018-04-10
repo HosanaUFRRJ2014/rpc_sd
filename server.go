@@ -9,31 +9,17 @@ import (
 	"interfaceCadastroNotas"         //TODO: Pegar essa interface da internet go get ...
 
 	"io/ioutil"
-//	"log"
 	"os"
-//	"net"
 	"net/http"
 	"net/rpc"
 	"regexp"
 	"strconv"
 	"strings"
 
-/*	"errors" */
 
 )
 
 const CAMINHO_ARQUIVO string = "alunosCadastrados.txt"
-
-
-/*type CadastroNotas struct {
-	alunos []DadosCadastro
-}*/
-
-/*type DadosCadastro struct {
-	Matricula string
-	Codigo string
-	Nota float32
-}*/
 
 type CadastroNotas int
 
@@ -255,11 +241,9 @@ func consultarCR(matricula string) (float32, error){
 
 	if erro == nil {
 		cr = calcularCR(notasAluno)	
+	} else {
+		erro = fmt.Errorf("Erro: Impossível calcular CR do aluno %q.", matricula)
 	}
-
-	/*else {
-		erro = fmt.Errorf("Erro")
-	}*/
 
 	return cr, erro
 }
@@ -320,12 +304,3 @@ func main() {
 
    
 }
-
-/*func main() {
-
-    arith := new(Arith)
-    rpc.Register(arith)
-    rpc.HandleHTTP()
-
-   
-}*/
