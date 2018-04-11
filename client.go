@@ -13,15 +13,19 @@ type _CadastroNotas struct {
 	cliente *rpc.Client
 }
 
+func checarErro(erro error) {
+	if erro!= nil {
+		fmt.Println(erro)
+	}
+}
+
 
 func (c *_CadastroNotas) cadastrarNota(matricula string, codDisciplina string, nota float32) bool{
 	//realizando chamada síncrona
 	dadosCadastro := &DadosCadastro{matricula,codDisciplina,nota}
 	var sucesso bool
 	erro := c.cliente.Call("CadastroNotas.CadastrarNota",dadosCadastro,&sucesso)
-	if erro!= nil {
-		panic(erro)
-	}
+	checarErro(erro)
 
 	return sucesso
 }
@@ -31,9 +35,8 @@ func (c *_CadastroNotas) consultarNota(matricula string, codDisciplina string) f
 	dadosCadastro := &DadosCadastro{Matricula:matricula,Codigo:codDisciplina}
 	var nota float32
 	erro := c.cliente.Call("CadastroNotas.ConsultarNota",dadosCadastro,&nota)
-	if erro!= nil {
-		panic(erro)
-	}
+	checarErro(erro)
+
 
 	return nota
 }
@@ -44,9 +47,8 @@ func (c *_CadastroNotas) consultarNotas(matricula string) []float32{
 	dadosCadastro := &DadosCadastro{Matricula:matricula}
 	var notas []float32
 	erro := c.cliente.Call("CadastroNotas.ConsultarNotas",dadosCadastro,&notas)
-	if erro!= nil {
-		panic(erro)
-	}
+	checarErro(erro)
+
 
 	return notas
 }
@@ -57,9 +59,8 @@ func (c *_CadastroNotas) consultarCR(matricula string) float32{
 	dadosCadastro := &DadosCadastro{Matricula:matricula}
 	var cr float32
 	erro := c.cliente.Call("CadastroNotas.ConsultarCR",dadosCadastro,&cr)
-	if erro!= nil {
-		panic(erro)
-	}
+	checarErro(erro)
+
 
 	return cr
 }
@@ -91,21 +92,30 @@ func main() {
 
 	c := _CadastroNotas{cliente:cliente}
 
-	sucesso := c.cadastrarNota("2013478522", "DD5689", 9.5)
+	var sucesso bool
+
+	sucesso = c.cadastrarNota("2014780267", "AA5879", 8.5)
 	fmt.Println(sucesso)
+
+
+	sucesso = c.cadastrarNota("2014780267", "BB5569", 7.0)
+	fmt.Println(sucesso)
+
 
 	nota := c.consultarNota("2013478522", "DD5689")
 	fmt.Println(nota)
 
-	notas := c.consultarNotas("20134") //deveria lançar erro, mas não lança
+	notas := c.consultarNotas("2014780267") //deveria lançar erro, mas não lança
 	fmt.Println(notas)
 
-	cr := c.consultarCR("2013478522")
+	cr := c.consultarCR("2014780267")
 	fmt.Println(cr)
 
 
 	//FIXME: dando match em prefixo de matrícula e disciplina, ao invés de palavra exata
 	//TODO: Remover panic e colocar os.Exit(1)
-	//TODO: desencapsular métodos receptors do server
 	//Organizar melhor métodos do client, procurando evitar repetição de código.
+
+
+	//export GOPATH=$HOME/go
 }
