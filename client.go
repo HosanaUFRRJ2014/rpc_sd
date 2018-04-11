@@ -96,7 +96,7 @@ func main() {
 	nota := c.consultarNota("2013478522", "DD5689")
 	fmt.Println(nota)
 
-	notas := c.consultarNotas("2014780267") //deveria lançar erro, mas não lança
+	notas := c.consultarNotas("2014780267")
 	fmt.Println(notas)
 
 	cr := c.consultarCR("2014780267")
