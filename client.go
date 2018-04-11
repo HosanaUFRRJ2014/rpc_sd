@@ -3,7 +3,8 @@ package main
 
 import  (
 	"fmt"
-	. "interfaceCadastroNotas"
+	."github.com/HosanaUFRRJ2014/interfaceCadastroNotas" 
+
 	"net/rpc"
 
 )

@@ -6,7 +6,7 @@ import (
 
 	"fmt"
 
-	"interfaceCadastroNotas"         //TODO: Pegar essa interface da internet go get ...
+	"github.com/HosanaUFRRJ2014/interfaceCadastroNotas" 
 
 	"io/ioutil"
 	"os"
@@ -61,8 +61,8 @@ func cadastroEncontrado(linhaArquivo string, matricula string, codDisciplina str
 	var dadosAluno  [] string
 	dadosAluno = strings.Split(linhaArquivo,"\t")
 
-	matriculasIguais, _ := regexp.MatchString(matricula, dadosAluno[0])
-	codDisciplinaIguais, _ := regexp.MatchString(codDisciplina, dadosAluno[1])
+	matriculasIguais, _ := regexp.MatchString("^" + matricula + "$", dadosAluno[0])
+	codDisciplinaIguais, _ := regexp.MatchString("^" + codDisciplina + "$", dadosAluno[1])
 
     return matriculasIguais && codDisciplinaIguais
 }
