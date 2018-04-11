@@ -55,7 +55,7 @@ func cadastroEncontrado(linhaArquivo string, matricula string, codDisciplina str
 
 	matriculasIguais := matricula == dadosAluno[0]
 
-	//Se o código foi informado, este deve ser comparado. Se não, retorna true, pois está sendo usando por ConsultarNotas que não possui código como parâmetro
+	//Se o código foi informado, este deve ser comparado. Se não, retorna true, pois está sendo usando por ConsultarNotas que não possui código como parâmetro.
 	codDisciplinaIguais := true
 
 	if codDisciplina != "" {
