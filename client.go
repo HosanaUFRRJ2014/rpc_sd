@@ -81,15 +81,6 @@ func main() {
 		panic(erro)
 	}
 
-	//realizando chamada síncrona
-/*	dadosCadastro := DadosCadastro{"2014780267","CC5555",9.54}
-	var sucesso bool
-	erro = cliente.Call("CadastroNotas.CadastrarNota",dadosCadastro,&sucesso)
-	if erro!= nil {
-		panic(erro)
-	}
-	fmt.Println(sucesso)*/
-
 	c := _CadastroNotas{cliente:cliente}
 
 	var sucesso bool
@@ -112,8 +103,6 @@ func main() {
 	fmt.Println(cr)
 
 
-	//FIXME: dando match em prefixo de matrícula e disciplina, ao invés de palavra exata
-	//TODO: Remover panic e colocar os.Exit(1)
 	//Organizar melhor métodos do client, procurando evitar repetição de código.
 
 
