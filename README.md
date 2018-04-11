@@ -9,7 +9,7 @@ Este repositório contém um código servidor de uma aplicação com RPC para um
 
 ### Importando biblioteca
 
-Existem duas formas de importar e utilizar a biblioteca feita para esta aplicação: *localmente*, na qual é necessário obter o código fonte e *remotamente*, na qual é preciso apenas fazer com que o Go capture a referência para o repositório na Internet.  
+Existem duas formas de importar e utilizar a biblioteca feita para esta aplicação: *localmente*, na qual é necessário obter o código fonte e *remotamente*, na qual é preciso apenas fazer com que o Go capture a referência para o repositório na Internet.
 
   #### Utilizando a biblioteca localmente:
 

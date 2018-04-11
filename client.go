@@ -83,6 +83,25 @@ func main() {
 
 	c := _CadastroNotas{cliente:cliente}
 
+
+
+
+
+	/*for true {
+		
+	}
+*/
+
+
+
+
+
+
+
+
+
+
+
 	var sucesso bool
 
 	sucesso = c.cadastrarNota("2014780267", "AA5879", 8.5)
