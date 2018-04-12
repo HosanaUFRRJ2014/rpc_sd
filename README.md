@@ -39,7 +39,7 @@ O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu
 ### Utilizando as bibliotecas locais:
 
   Para que a aplicação funcione, as pastas do repositório devem estar dentro de go/src que, por sua vez, deve ser o workspace do GO. [Consulte a documentação para mais detalhes](https://golang.org/doc/install#testing)
- A organização dos arquivos deve estar igual a ilustrada na seção ["Descrição Geral"](## Descrição Geral). (FIX link)
+ A organização dos arquivos deve estar igual a ilustrada na seção ["Descrição Geral"](https://github.com/HosanaUFRRJ2014/rpc_sd/blob/rpc/README.md#descri%C3%A7%C3%A3o-geral).
 
 
 ## Para Compilar:
