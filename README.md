@@ -72,4 +72,4 @@ go build main/main.go
   
    Em outro terminal, entre na pasta *"main"* e execute:
 
-    ./client.go
+    ./main.go
