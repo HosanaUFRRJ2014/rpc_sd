@@ -46,7 +46,11 @@ O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu
 
   Na pasta "src", digite os seguintes comandos:  
 ```
-go build server/server.go
+cd server
+go build server.go
+```
+```
+cd ..
 ```
 ```  
 go build client/client.go
@@ -55,7 +59,8 @@ go build client/client.go
 go build menu/menu.go
 ```
 ```
-go build main/main.go
+cd main
+go build main.go
 ```
 
   **NOTA:** É de **EXTREMA** importância respeitar a ordem de compilação informada acima, para que não hajam problemas de utlização de versões obsoletas de bibliotecas.

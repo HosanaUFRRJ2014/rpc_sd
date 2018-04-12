@@ -81,42 +81,8 @@ func ConectarComServidor() Cliente {
 
 	c := Cliente{cliente:cliente}
 
-/*	menu := Menu{}
 
-	menu.ExibirMenu()
-
-	var sucesso bool
-
-	sucesso = c.cadastrarNota("2014780267", "AA5879", 8.5)
-	fmt.Println(sucesso)
-
-*/
 	return c
 
-/*
 
-	var sucesso bool
-
-	sucesso = c.cadastrarNota("2014780267", "AA5879", 8.5)
-	fmt.Println(sucesso)
-
-
-	sucesso = c.cadastrarNota("2014780267", "BB5569", 7.0)
-	fmt.Println(sucesso)
-
-
-	nota := c.consultarNota("2013478522", "DD5689")
-	fmt.Println(nota)
-
-	notas := c.consultarNotas("2014780267")
-	fmt.Println(notas)
-
-	cr := c.consultarCR("2014780267")
-	fmt.Println(cr)*/
-
-
-	//Organizar melhor métodos do client, procurando evitar repetição de código.
-
-
-	//export GOPATH=$HOME/go
 }
