@@ -30,15 +30,13 @@ O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu
 
 
 ## Configurando o ambiente de Desenvolvimento e Testes:
-  Em breve, instruções de como instalar e configurar o GO.
+  *[Em breve, instruções de como instalar e configurar o GO.]*
 
   Caso já o tenha instalado, pode ser que em um computador Linux Ubuntu seja necessário executar ```export GOPATH=$PATH:$HOME/go ``` toda vez que se abrir um novo terminal. 
 
 
 
-### Importando biblioteca
-
-  #### Utilizando a biblioteca localmente:
+### Utilizando as bibliotecas locais:
 
   Para que a aplicação funcione, as pastas do repositório devem estar dentro de go/src que, por sua vez, deve ser o workspace do GO. [Consulte a documentação para mais detalhes](https://golang.org/doc/install#testing)
  A organização dos arquivos deve estar igual a ilustrada na seção ["Descrição Geral"](## Descrição Geral). (FIX link)
@@ -46,16 +44,19 @@ O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu
 
 ## Para Compilar:
 
-  Na pasta "src", digite os seguintes comandos:  
-
-    go build server/server.go
-  
-    go build client/client.go
-
-    go build menu/menu.go
-
-    go build main/main.go
-
+  Na pasta "src", digite os seguintes comandos:  
+```
+go build server/server.go
+```
+```  
+go build client/client.go
+```
+```
+go build menu/menu.go
+```
+```
+go build main/main.go
+```
 
   **IMPORTANTE:** É de **EXTREMA** importância respeitar a ordem de compilação informada acima, para que não hajam problemas de utlização de versões obsoletas de bibliotecas.
 
@@ -64,10 +65,11 @@ O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu
   
   
 ## Para Executar:
-    Em um terminal, entre na pasta *"server"* e execute:
+   Em um terminal, entre na pasta *"server"* e execute:
+   
     ./server.go
   
   
-Em outro terminal, entre na pasta *"main"* e execute:
+   Em outro terminal, entre na pasta *"main"* e execute:
 
     ./client.go
