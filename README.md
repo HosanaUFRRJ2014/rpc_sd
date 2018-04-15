@@ -25,7 +25,13 @@ Este repositório contém um código servidor de uma aplicação com RPC para um
     README.md
 
 
-O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu"* e *"main"* pertencem ao lado do cliente. O pacote *"interfaceCadastroNotas"* descreve uma interface que deve ser implementada por ambos os lados. Isso foi feito a fim de se evitar repetição de código.
+O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu"* e *"main"* pertencem ao lado do cliente. O pacote *"interfaceCadastroNotas"* descreve uma interface que deve ser implementada por ambos os lados.
+
+- O pacote *"server"* contém funções de criação e gerenciamento do servidor;
+- O pacote *"client"* contém funções de criação, gerenciamento do cliente e chamada do servidor;
+- O pacote *"interfaceCadastroNotas"* é uma interface que deve ser implementada pelo servidor e pelo cliente, a fim de evitar repetição de código;
+- O pacote *"menu"* contém funções para a exibição do menu da aplicação;
+- O pacote *"main"* é o pacote principal do cliente, no qual o programa é executado.
 
 
 
