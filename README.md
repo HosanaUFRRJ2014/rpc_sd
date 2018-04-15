@@ -74,7 +74,7 @@ cd ..
   
   
 ## Para Executar:
-   Em um terminal, entre na pasta *"server"* (`cd server´`) e execute:
+   Em um terminal, entre na pasta *"server"* (`cd server`) e execute:
    
     ./server.go
   
