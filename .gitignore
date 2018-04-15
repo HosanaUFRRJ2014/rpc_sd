@@ -1,3 +1,5 @@
 server/server
 main/main
 *.txt
+*.pdf
+*.zip

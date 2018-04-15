@@ -139,7 +139,7 @@ func  calcularCR(notasAluno [] float32) (float32){
 
 /****************************************MÉTODOS EXPORTADOS DO RPC*******************************************/
 
-//FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
+
 //Em letra maiúscula porque os métodos precisam ser exportados
 func (cadastroNotas *CadastroNotas) CadastrarNota(dadosCadastro interfaceCadastroNotas.DadosCadastro, sucessoCadastro *bool) error{
 	
@@ -174,7 +174,7 @@ func (cadastroNotas *CadastroNotas) CadastrarNota(dadosCadastro interfaceCadastr
 	
 }
 
-//FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
+
 func (cadastroNotas *CadastroNotas) ConsultarNota(dadosCadastro interfaceCadastroNotas.DadosCadastro, nota * float32) error{
 
 	var arquivo * os.File
@@ -213,7 +213,7 @@ func (cadastroNotas *CadastroNotas) ConsultarNota(dadosCadastro interfaceCadastr
 
 }
 
-//FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
+
 func (cadastroNotas *CadastroNotas) ConsultarNotas(dadosCadastro interfaceCadastroNotas.DadosCadastro, notas *[] float32) error{
 
 	var arquivo * os.File
@@ -255,7 +255,7 @@ func (cadastroNotas *CadastroNotas) ConsultarNotas(dadosCadastro interfaceCadast
 
 }
 
-//FIXME: OS pararâmetros não são os mesmos dos pedidos na descrição do exercício!
+
 func (cadastroNotas *CadastroNotas) ConsultarCR(dadosCadastro interfaceCadastroNotas.DadosCadastro, cr * float32) error {
 
 	var notasAluno [] float32

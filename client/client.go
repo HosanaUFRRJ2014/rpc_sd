@@ -5,7 +5,7 @@ import  (
 	"fmt"
 	//."github.com/HosanaUFRRJ2014/interfaceCadastroNotas" 
 	."interfaceCadastroNotas"
-	//. "menu"
+
 
 	"net/rpc"
 
