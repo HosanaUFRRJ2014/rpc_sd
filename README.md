@@ -30,9 +30,10 @@ O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu
 
 
 ## Configurando o ambiente de Desenvolvimento e Testes:
-  *[Em breve, instruções de como instalar e configurar o GO.]*
 
-  Caso já o tenha instalado, pode ser que em um computador Linux Ubuntu seja necessário executar ```export GOPATH=$PATH:$HOME/go ``` toda vez que se abrir um novo terminal. 
+  Consulte o [tutorial oficial](https://golang.org/doc/install) da linguagem Go para a instalação.
+
+  Caso já tenha instalado o Go, pode ser que em um computador Linux Ubuntu seja necessário executar ```export GOPATH=$PATH:$HOME/go ``` toda vez que se abrir um novo terminal. 
 
 
 
@@ -48,19 +49,22 @@ O pacote *"server"* pertence ao lado do servidor e os pacotes *"client"*, *"menu
 ```
 cd server
 go build server.go
-```
-```
 cd ..
 ```
 ```  
-go build client/client.go
+cd client
+go build client.go
+cd ..
 ```
 ```
-go build menu/menu.go
+cd menu
+go build menu.go
+cd ..
 ```
 ```
 cd main
 go build main.go
+cd ..
 ```
 
   **NOTA:** É de **EXTREMA** importância respeitar a ordem de compilação informada acima, para que não hajam problemas de utlização de versões obsoletas de bibliotecas.
@@ -70,11 +74,14 @@ go build main.go
   
   
 ## Para Executar:
-   Em um terminal, entre na pasta *"server"* e execute:
+   Em um terminal, entre na pasta *"server"* (`cd server´`) e execute:
    
     ./server.go
   
   
-   Em outro terminal, entre na pasta *"main"* e execute:
+   Em outro terminal, entre na pasta *"main"* (```cd main```) e execute:
 
     ./main.go
+
+
+Obs: O arquivo txt que (*alunosCadastrados.txt*) salva as informações cadastradas na aplicação fica dentro da pasta *"server"*.
