@@ -84,4 +84,4 @@ cd ..
     ./main.go
 
 
-Obs: O arquivo txt que (*alunosCadastrados.txt*) salva as informações cadastradas na aplicação fica dentro da pasta *"server"*.
+Obs: O arquivo txt que (*alunosCadastrados.txt*) salva as informações cadastradas na aplicação será criado dentro da pasta *"server"*.
